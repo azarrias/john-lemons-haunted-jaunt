@@ -1,0 +1,16 @@
+{
+"companyName": "DefaultCompany",
+"productName": "John Lemon's Haunted Jaunt",
+"productVersion": "1.0",
+"dataUrl": "John_Lemon_s_Haunted_Jaunt-v0.1.1-webgl.data.unityweb",
+"wasmCodeUrl": "John_Lemon_s_Haunted_Jaunt-v0.1.1-webgl.wasm.code.unityweb",
+"wasmFrameworkUrl": "John_Lemon_s_Haunted_Jaunt-v0.1.1-webgl.wasm.framework.unityweb",
+"graphicsAPI": ["WebGL 2.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Dark",
+"backgroundColor": "#231F20",
+"cacheControl": {"default": "must-revalidate"},
+"developmentBuild": false,
+"multithreading": false,
+"unityVersion": "2019.4.1f1"
+}
