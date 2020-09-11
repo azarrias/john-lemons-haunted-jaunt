@@ -37,7 +37,8 @@ if exist "%~dp0build" (
 )
 
 echo Building...
-set UNITY_HOME=C:\Program Files\Unity\Hub\Editor\2017.4.40f1\Editor\Unity.exe
+::set UNITY_HOME=C:\Program Files\Unity\Hub\Editor\2017.4.40f1\Editor\Unity.exe
+set UNITY_HOME=C:\Program Files\Unity\Editor\Unity.exe
 "%UNITY_HOME%" -quit -batchmode -executeMethod BuildScript.BuildAll
 
 pushd build
