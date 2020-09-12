@@ -2,9 +2,10 @@
 using System.Text;
 using UnityEditor;
 using UnityEngine;
+using UnityEditor.Build.Reporting;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
+using System;
 
 static public class BuildScript 
 {
@@ -19,31 +20,25 @@ static public class BuildScript
 	[UnityEditor.MenuItem("Util/Build StandaloneWindows")]
 	static void BuildStandaloneWindows() 
 	{
-		BuildPipeline.BuildPlayer(SCENES, OUTPUT_PATH + RELEASE_SUBFOLDER + "win_x86/" + FILE_NAME + ".exe", BuildTarget.StandaloneWindows, BuildOptions.None);
+		DoBuild(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows, OUTPUT_PATH + RELEASE_SUBFOLDER + "win_x86/" + FILE_NAME + ".exe");
 	}
 
 	[UnityEditor.MenuItem("Util/Build StandaloneWindows64")]
 	static void BuildStandaloneWindows64()
 	{
-		BuildPipeline.BuildPlayer(SCENES, OUTPUT_PATH + RELEASE_SUBFOLDER + "win_x64/" + FILE_NAME + ".exe", BuildTarget.StandaloneWindows64, BuildOptions.None);
-	}
-
-	[UnityEditor.MenuItem("Util/Build StandaloneLinux")]
-	static void BuildStandaloneLinux()
-	{
-		BuildPipeline.BuildPlayer(SCENES, OUTPUT_PATH + RELEASE_SUBFOLDER + "lin_x86/" + FILE_NAME + ".x86", BuildTarget.StandaloneLinux, BuildOptions.None);
+		DoBuild(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows64, OUTPUT_PATH + RELEASE_SUBFOLDER + "win_x64/" + FILE_NAME + ".exe");
 	}
 
 	[UnityEditor.MenuItem("Util/Build StandaloneLinux64")]
 	static void BuildStandaloneLinux64()
 	{
-		BuildPipeline.BuildPlayer(SCENES, OUTPUT_PATH + RELEASE_SUBFOLDER + "lin_x64/" + FILE_NAME + ".x86_64", BuildTarget.StandaloneLinux64, BuildOptions.None);
+		DoBuild(BuildTargetGroup.Standalone, BuildTarget.StandaloneLinux64, OUTPUT_PATH + RELEASE_SUBFOLDER + "lin_x64/" + FILE_NAME + ".x86_64");
 	}
 
 	[UnityEditor.MenuItem("Util/Build WebGL")]
 	static void BuildWebGL()
 	{
-		BuildPipeline.BuildPlayer(SCENES, OUTPUT_PATH + RELEASE_SUBFOLDER + "webgl", BuildTarget.WebGL, BuildOptions.None);
+		DoBuild(BuildTargetGroup.WebGL, BuildTarget.WebGL, OUTPUT_PATH + RELEASE_SUBFOLDER + "webgl");
 	}
 
 	[UnityEditor.MenuItem("Util/Build All")]
@@ -51,9 +46,22 @@ static public class BuildScript
 	{
 		BuildStandaloneWindows();
 		BuildStandaloneWindows64();
-		BuildStandaloneLinux();
+		//BuildStandaloneLinux();
 		BuildStandaloneLinux64();
 		BuildWebGL();
+	}
+
+	private static void DoBuild(BuildTargetGroup targetGroup, BuildTarget target, string path)
+	{
+		EditorUserBuildSettings.SwitchActiveBuildTarget(targetGroup, target);
+		BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();
+		buildPlayerOptions.scenes = SCENES;
+		buildPlayerOptions.locationPathName = path;
+		buildPlayerOptions.target = target;
+		buildPlayerOptions.options = BuildOptions.None;
+
+		BuildReport report = BuildPipeline.BuildPlayer(buildPlayerOptions);
+		WriteSummaryLog(report.summary);
 	}
 
 	static string[] GetScenes()
@@ -82,5 +90,18 @@ static public class BuildScript
 			}
 		}
 		return sb.ToString();
+	}
+
+	static void WriteSummaryLog(BuildSummary summary)
+	{
+		if (summary.result == BuildResult.Succeeded)
+		{
+			Debug.Log("Build succeeded: " + summary.totalSize + " bytes");
+		}
+
+		if (summary.result == BuildResult.Failed)
+		{
+			Debug.Log("Build failed");
+		}
 	}
 }

@@ -7,6 +7,7 @@
 ::                   Needs to find BuildScript.cs in the file subtree
 ::                   UNITY_HOME needs to point to the appropriate installed version of Unity
 ::                   GITHUB_TOKEN must be available in the environment, or set manually here
+::                   The remote must be using the https protocol
 ::                   The project which you want to build can't be open
 :: Author:           azarrias
 :: Usage:            unity_multi_platform_build.bat
@@ -62,9 +63,9 @@ echo Packing %~1
 exit /b 0
 
 :CommitWeb
-echo Pushing %~1 to %git_repo% gh-pages branch
 for /f %%i in ('git config --get remote.origin.url') do set git_remote=%%i
 set "x=%git_remote:github.com=" & set "git_repo=%"
+echo Pushing %~1 to %git_repo% gh-pages branch
 pushd %~1
 git init
 git add .
